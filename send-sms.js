@@ -61,12 +61,14 @@ const sendSMS = (targetNumber, message) => {
 	to: targetNumber,
 	text: message
     });
+    const requestID = 'gsms-' + Math.random();
+    console.log("SCS-Request-ID: " + requestID);
     const headers = {
 	'Content-Type': 'application/json',
 	'Content-Length': data.length,
 	'SCS-Version': 2,
 	'client_id': clientID,
-	'SCS-Request-ID': 'gsms-' + Math.random(),
+	'SCS-Request-ID': requestID,
 	Authorization: 'Basic ' + new Buffer(clientID + ':' + clientSecret).toString('base64')
     };
     const options = {
@@ -79,6 +81,8 @@ const sendSMS = (targetNumber, message) => {
 
     const req = https.request(options, (res) => {
 	console.log(`status code: ${res.statusCode}`);
+
+	console.log(res.headers);
 
 	res.on('data', (d) => {
 	    process.stdout.write(d);
