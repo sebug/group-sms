@@ -69,7 +69,7 @@ const sendSMS = (targetNumber, message) => {
 	'SCS-Version': 2,
 	'client_id': clientID,
 	'SCS-Request-ID': requestID,
-	Authorization: 'Basic ' + new Buffer(clientID + ':' + clientSecret).toString('base64')
+	'Accept': 'application/json'
     };
     const options = {
 	hostname: 'api.swisscom.com',
