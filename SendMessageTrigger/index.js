@@ -59,7 +59,7 @@ const confirmSend = '<p class="confirm-send-info">En appuyant sur "Envoyer messa
 const usernameAndPassword = '<p><label>Nom d\'utilisateur: <input name="username" required></label><br />' +
       '<label>Mot de passe: <input name="password" type="password" required></label></p>';
 
-const contentSendForm = h1('Envoyer un message') +
+const contentSendForm = h1('Envoyer un message pour astreints Valavran') +
 			form(
 			    fieldset('Groupe destinataire',
 				     groupDropdown) +
@@ -78,8 +78,17 @@ const sendFormat = "/ecallurl/ecallurl.ASP?WCI=Interface&Function=SendPage&Addre
 // The current API doesn't really receive the params as
 // UTF-8, but instead as specified in https://www.ecall.ch/fileadmin/user_upload/ecall/ecall_entwickler/DS-Beschreibung_HTTP_HTTPS-Zugang.pdf
 // Replace accordingly
-const replaceUTF8Escapes = (text) =>
-      text.replace('%C3%A8','%E8');
+const replaceUTF8Escapes = (text) => {
+    const replacements = [
+	{ from: encodeURIComponent('è'), to: '%E8' },
+	{ from: encodeURIComponent('é'), to: '%E9' },
+	{ from: encodeURIComponent('à'), to: '%E0' }
+    ];
+    for (let r of replacements) {
+	text = text.replace(r.from, r.to);
+    }
+    return text;
+};
 
 const sendSMS = (context, eCallAccountName, eCallAccountPassword, targetNumber, message, success, error) => {
     const requestPath = sendFormat.replace('{accountName}',encodeURIComponent(eCallAccountName))
