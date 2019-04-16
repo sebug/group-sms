@@ -10,6 +10,7 @@ const head = (inner) =>
       '<head>' +
       inner +
       '<meta charset="utf-8" />' +
+      '<link rel="stylesheet" href="https://raw.githubusercontent.com/sebug/group-sms/master/style.css" />' +
       '</head>';
 
 const body = (inner) =>
