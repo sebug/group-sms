@@ -64,7 +64,7 @@ const contentSendForm = h1('Envoyer un message') +
 				confirmSend +
 				sendbutton());
 
-const returnLink = '<a href="api/SendMessageTrigger">Nouveau message</a>';
+const returnLink = '<a href="/api/SendMessageTrigger">Nouveau message</a>';
 
 const processSend = (context, requestBody) => {
     const searchParams = new URLSearchParams(requestBody);
