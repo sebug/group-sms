@@ -66,15 +66,58 @@ const contentSendForm = h1('Envoyer un message') +
 
 const returnLink = '<a href="/api/SendMessageTrigger">Nouveau message</a>';
 
-const processSend = (context, requestBody, successCallback) => {
+const eCallDomain = "www1.ecall.ch";
+const sendFormat = "/ecallurl/ecallurl.ASP?WCI=Interface&Function=SendPage&Address={address}&Message={message}&AccountName={accountName}&AccountPassword={accountPassword}";
+
+const sendSMS = (context, eCallAccountName, eCallAccountPassword, targetNumber, message, success, error) => {
+    const requestPath = sendFormat.replace('{accountName}',encodeURIComponent(eCallAccountName))
+	  .replace('{accountPassword}', encodeURIComponent(eCallAccountPassword))
+	  .replace('{address}', encodeURIComponent(targetNumber))
+	  .replace('{message}', encodeURIComponent(message));
+
+    const options = {
+	hostname: eCallDomain,
+	port: 443,
+	path: requestPath,
+	method: 'GET'
+    };
+
+    context.log(requestPath);
+
+    const req = https.request(options, (res) => {
+	context.log(`status code: ${res.statusCode}`);
+
+	context.log(res.headers);
+
+	res.on('data', (d) => {
+	    context.log(d);
+	    success();
+	});
+    });
+
+    req.on('error', (err) => {
+	context.log(err);
+	error(err);
+    });
+
+    req.end();
+};
+
+const processSend = (context, requestBody, callback) => {
     const searchParams = new URLSearchParams(requestBody);
     const message = searchParams.get('message');
     const username = searchParams.get('username');
     const password = searchParams.get('password');
     const recipient = searchParams.get('groupe');
-    successCallback('<p>Message envoyé au groupe ' + recipient + '! ' +
+    sendSMS(context, username, password, recipient, message, () => {
+	callback('<p>Message envoyé au groupe ' + recipient + '. ' +
 	returnLink +
 		    '</p>');
+    }, (err) => {
+	callback('<p>Erreur d\'envoi au groupe ' + recipient + '! ' +
+	returnLink +
+		    '</p>');
+    });
 };
 
 module.exports = function (context, req) {
