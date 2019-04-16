@@ -130,6 +130,7 @@ const processSend = (context, requestBody, callback) => {
     const username = searchParams.get('username');
     const password = searchParams.get('password');
     const recipient = searchParams.get('groupe');
+    context.log('Provider used: ' + process.env.PROVIDER_USED);
     sendSMS(context, username, password, recipient, message, () => {
 	callback('<p>Message envoyé au groupe ' + recipient + '. ' +
 	returnLink +
