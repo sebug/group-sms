@@ -141,8 +141,14 @@ const processSend = (context, requestBody, callback) => {
 		 returnLink +
 		 '</p>');
     };
-    
-    sendSMS(context, username, password, recipient, message, successCallback, errorCallback);
+
+
+    if (process.env.PROVIDER_USED === 'ecall') {
+	sendSMS(context, username, password, recipient, message, successCallback, errorCallback);
+    } else if (process.env.PROVIDER_USED === 'swisscom') {
+	context.log("TBD");
+	successCallback();
+    }
 };
 
 module.exports = function (context, req) {
