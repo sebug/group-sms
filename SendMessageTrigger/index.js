@@ -82,7 +82,7 @@ module.exports = function (context, req) {
 		title('Envoyer un message')
 	    ) +
 		body(
-		    contentSendForm
+		    pageContent
 		)
 	),
 	headers: {
