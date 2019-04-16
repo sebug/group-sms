@@ -44,7 +44,7 @@ const groupDropdown = '<select name="groupe">' +
 		 '<option value="' + group.name + '">' + group.displayName + '</option>').join(' ') +
       '</select>';
 
-const messageInput = '<textarea name="message">' +
+const messageInput = '<textarea name="message" rows="4">' +
       '</textarea>';
 
 const confirmSend = '<p class="confirm-send-info">En appuyant sur "Envoyer messages", tous les destinataires dans le groupe choisi recevront un SMS.</p>' +
@@ -53,16 +53,7 @@ const confirmSend = '<p class="confirm-send-info">En appuyant sur "Envoyer messa
 const usernameAndPassword = '<p><label>Nom d\'utilisateur: <input name="username" /></label><br />' +
       '<label>Mot de passe: <input name="password" type="password" /></label></p>';
 
-module.exports = function (context, req) {
-    
-    context.res = {
-	status: 200,
-	body: html(
-	    head(
-		title('Envoyer un message')
-	    ) +
-		body(
-		    h1('Envoyer un message') +
+const contentSendForm = h1('Envoyer un message') +
 			form(
 			    fieldset('Groupe destinataire',
 				     groupDropdown) +
@@ -71,7 +62,19 @@ module.exports = function (context, req) {
 				fieldset('Autorisation',
 					 usernameAndPassword) +
 				confirmSend +
-			    sendbutton())
+				sendbutton());
+
+module.exports = function (context, req) {
+    const pageContent = contentSendForm;
+    
+    context.res = {
+	status: 200,
+	body: html(
+	    head(
+		title('Envoyer un message')
+	    ) +
+		body(
+		    contentSendForm
 		)
 	),
 	headers: {
