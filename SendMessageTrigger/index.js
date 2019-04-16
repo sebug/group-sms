@@ -1,4 +1,5 @@
 const https = require('https');
+const crypto = require('crypto');
 
 const html = (inner) =>
       '<!DOCTYPE html>' +
@@ -144,6 +145,8 @@ const processSend = (context, requestBody, callback) => {
 
 
     if (process.env.PROVIDER_USED === 'ecall') {
+	const passwordHashed = crypto.createHash('sha256').update(password, 'utf8').digest();
+	context.log('password hashed is ' + passwordHashed);
 	sendSMS(context, username, password, recipient, message, successCallback, errorCallback);
     } else if (process.env.PROVIDER_USED === 'swisscom') {
 	context.log("TBD");
