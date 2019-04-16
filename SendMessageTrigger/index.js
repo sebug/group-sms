@@ -91,7 +91,7 @@ const replaceUTF8Escapes = (text) => {
     return text;
 };
 
-const sendSMS = (context, eCallAccountName, eCallAccountPassword, targetNumber, message, success, error) => {
+const sendSMSEcall = (context, eCallAccountName, eCallAccountPassword, targetNumber, message, success, error) => {
     const requestPath = sendFormat.replace('{accountName}',encodeURIComponent(eCallAccountName))
 	  .replace('{accountPassword}', encodeURIComponent(eCallAccountPassword))
 	  .replace('{address}', encodeURIComponent(targetNumber))
@@ -122,6 +122,57 @@ const sendSMS = (context, eCallAccountName, eCallAccountPassword, targetNumber, 
 	error(err);
     });
 
+    req.end();
+};
+
+const sendSMSSwisscom = (context, targetNumber, message, success, error) => {
+    const clientID = process.env.GROUP_SMS_CLIENT_KEY;
+    const clientSecret = process.env.GROUP_SMS_CLIENT_SECRET;
+    if (!clientID) {
+	throw new Error("Please specify environment variable GROUP_SMS_CLIENT_KEY");
+    }
+    if (!clientSecret) {
+	throw new Error("Please specify environment variable GROUP_SMS_CLIENT_SECRET");
+    }
+    const data = JSON.stringify({
+	to: targetNumber,
+	text: message
+    });
+    const requestID = 'gsms-' + Math.random();
+    console.log("SCS-Request-ID: " + requestID);
+    const headers = {
+	'Content-Type': 'application/json',
+	'Content-Length': data.length,
+	'SCS-Version': 2,
+	'client_id': clientID,
+	'SCS-Request-ID': requestID,
+	'Accept': 'application/json'
+    };
+    const options = {
+	hostname: 'api.swisscom.com',
+	port: 443,
+	path: '/messaging/sms',
+	method: 'POST',
+	headers: headers
+    };
+
+    const req = https.request(options, (res) => {
+	context.log(`status code: ${res.statusCode}`);
+
+	context.log(res.headers);
+
+	res.on('data', (d) => {
+	    context.log('' + d);
+	    success();
+	});
+    });
+
+    req.on('error', (err) => {
+	context.log(err);
+	error(err);
+    });
+
+    req.write(data);
     req.end();
 };
 
@@ -157,9 +208,9 @@ const processSend = (context, requestBody, callback) => {
 
 
     if (process.env.PROVIDER_USED === 'ecall') {
-	sendSMS(context, username, password, recipient, message, successCallback, errorCallback);
+	sendSMSEcall(context, username, password, recipient, message, successCallback, errorCallback);
     } else if (process.env.PROVIDER_USED === 'swisscom') {
-	context.log("TBD");
+	sendSMSSwisscom(context, process.env.TEST_NUMBER, message, successCallback, errorCallback);
 	successCallback();
     }
 };
