@@ -147,7 +147,7 @@ const sendSMSSwisscom = (context, targetNumber, message, success, error) => {
     const requestID = 'gsms-' + Math.random();
     context.log("SCS-Request-ID: " + requestID);
     const headers = {
-	'Content-Type': 'application/json',
+	'Content-Type': 'application/json; encoding=utf-8',
 	'Content-Length': data.length,
 	'SCS-Version': 2,
 	'client_id': clientID,
