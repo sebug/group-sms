@@ -64,10 +64,16 @@ const contentSendForm = h1('Envoyer un message') +
 				confirmSend +
 				sendbutton());
 
+const processSend = (requestBody) => {
+    return '<p>Message envoyé</p>';
+};
+
 module.exports = function (context, req) {
     let pageContent = contentSendForm;
-    context.log(req.method);
-    context.log(req.body);
+    if (req.method === 'POST') {
+	context.log(req.params);
+	pageContent = processSend(req.body);
+    }
     
     context.res = {
 	status: 200,
