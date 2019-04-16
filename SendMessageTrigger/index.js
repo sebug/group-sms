@@ -85,7 +85,7 @@ const replaceUTF8Escapes = (text) => {
 	{ from: encodeURIComponent('à'), to: '%E0' }
     ];
     for (let r of replacements) {
-	text = text.replace(r.from, r.to);
+	text = text.replace(new RegExp(r.from, 'g'), r.to);
     }
     return text;
 };
