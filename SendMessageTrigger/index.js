@@ -44,6 +44,9 @@ const groupDropdown = '<select name="groupe">' +
 		 '<option value="' + group.name + '">' + group.displayName + '</option>').join(' ') +
       '</select>';
 
+const messageInput = '<textarea name="message">' +
+      '</textarea>';
+
 module.exports = function (context, req) {
     
     context.res = {
@@ -57,6 +60,8 @@ module.exports = function (context, req) {
 			form(
 			    fieldset('Groupe destinataire',
 				     groupDropdown) +
+				fieldset('Message à envoyer',
+					 messageInput) +
 			    sendbutton())
 		)
 	),
