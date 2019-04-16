@@ -215,8 +215,23 @@ const processSend = (context, requestBody, callback) => {
     }
 };
 
-const getGroupsFromJSON = (successCallback, errorCallback) => {
-    successCallback({});
+const getGroupsFromJSON = (context, successCallback, errorCallback) => {
+    const url = new URL(process.env.GROUPS_URL);
+    const req = https.request(url, {}, (res) => {
+	context.log(`groups status code: ${res.statusCode}`);
+
+	res.on('data', (d) => {
+	    context.log('' + d);
+	    successCallback({});
+	});
+    });
+
+    req.on('error', (err) => {
+	context.log(err);
+	errorCallback(err);
+    });
+
+    req.end();
 };
 
 module.exports = function (context, req) {
@@ -276,5 +291,5 @@ module.exports = function (context, req) {
 	};
 	context.done();
     };
-    getGroupsFromJSON(successCallback, errorCallback);
+    getGroupsFromJSON(context, successCallback, errorCallback);
 };
