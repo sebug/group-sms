@@ -145,7 +145,7 @@ const sendSMSSwisscom = (context, targetNumber, message, success, error) => {
 	text: message
     });
     const requestID = 'gsms-' + Math.random();
-    console.log("SCS-Request-ID: " + requestID);
+    context.log("SCS-Request-ID: " + requestID);
     const headers = {
 	'Content-Type': 'application/json',
 	'Content-Length': data.length,
@@ -167,9 +167,10 @@ const sendSMSSwisscom = (context, targetNumber, message, success, error) => {
 
 	context.log(res.headers);
 
+	success();
+
 	res.on('data', (d) => {
 	    context.log('' + d);
-	    success();
 	});
     });
 
