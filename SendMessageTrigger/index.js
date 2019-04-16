@@ -182,7 +182,7 @@ const sendSMSSwisscom = (context, targetNumber, message, success, error) => {
     req.end();
 };
 
-const processSend = (context, requestBody, callback) => {
+const processSend = (context, groups, requestBody, callback) => {
     const searchParams = new URLSearchParams(requestBody);
     const message = searchParams.get('message');
     const username = searchParams.get('username');
@@ -216,6 +216,8 @@ const processSend = (context, requestBody, callback) => {
     if (process.env.PROVIDER_USED === 'ecall') {
 	sendSMSEcall(context, username, password, recipient, message, successCallback, errorCallback);
     } else if (process.env.PROVIDER_USED === 'swisscom') {
+	const peopleToSendTo = groups[recipient];
+	context.log(peopleToSendTo);
 	sendSMSSwisscom(context, process.env.TEST_NUMBER, message, successCallback, errorCallback);
 	successCallback();
     }
@@ -245,7 +247,7 @@ module.exports = function (context, req) {
 	const groupsArray = getGroupsFromObject(groups);
 	let pageContent = contentSendForm(groupsArray);
 	if (req.method === 'POST') {
-	    processSend(context, req.body, pageContent => {
+	    processSend(context, groups, req.body, pageContent => {
 		context.res = {
 		    status: 200,
 		    body: html(
