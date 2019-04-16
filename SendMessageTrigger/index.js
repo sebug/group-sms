@@ -90,7 +90,7 @@ const sendSMS = (context, eCallAccountName, eCallAccountPassword, targetNumber, 
 	context.log(res.headers);
 
 	res.on('data', (d) => {
-	    context.log(d);
+	    context.log('' + d);
 	    success();
 	});
     });
