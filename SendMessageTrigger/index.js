@@ -39,19 +39,19 @@ const fieldset = (legend, inner) =>
       inner +
       '</fieldset>';
 
-const groupDropdown = '<select name="groupe">' +
+const groupDropdown = '<select name="groupe" required>' +
       groups.map(group =>
 		 '<option value="' + group.name + '">' + group.displayName + '</option>').join(' ') +
       '</select>';
 
-const messageInput = '<textarea name="message" rows="4">' +
+const messageInput = '<textarea name="message" rows="4" required>' +
       '</textarea>';
 
 const confirmSend = '<p class="confirm-send-info">En appuyant sur "Envoyer messages", tous les destinataires dans le groupe choisi recevront un SMS.</p>' +
-      '<p class="confirm-send"><label><input type="checkbox" name="iconfirm" />Je confirme</label></p>';
+      '<p class="confirm-send"><label><input type="checkbox" name="iconfirm" required />Je confirme</label></p>';
 
-const usernameAndPassword = '<p><label>Nom d\'utilisateur: <input name="username" /></label><br />' +
-      '<label>Mot de passe: <input name="password" type="password" /></label></p>';
+const usernameAndPassword = '<p><label>Nom d\'utilisateur: <input name="username" required></label><br />' +
+      '<label>Mot de passe: <input name="password" type="password" required></label></p>';
 
 const contentSendForm = h1('Envoyer un message') +
 			form(
