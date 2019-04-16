@@ -66,38 +66,53 @@ const contentSendForm = h1('Envoyer un message') +
 
 const returnLink = '<a href="/api/SendMessageTrigger">Nouveau message</a>';
 
-const processSend = (context, requestBody) => {
+const processSend = (context, requestBody, successCallback) => {
     const searchParams = new URLSearchParams(requestBody);
     const message = searchParams.get('message');
     const username = searchParams.get('username');
     const password = searchParams.get('password');
     const recipient = searchParams.get('groupe');
-    context.log('Sending to ' + recipient);
-    return '<p>Message envoyé au groupe ' + recipient + '. ' +
+    successCallback('<p>Message envoyé au groupe ' + recipient + '! ' +
 	returnLink +
-	'</p>';
+		    '</p>');
 };
 
 module.exports = function (context, req) {
     let pageContent = contentSendForm;
     if (req.method === 'POST') {
 	context.log(req.params);
-	pageContent = processSend(context, req.body);
-    }
-    
-    context.res = {
-	status: 200,
-	body: html(
-	    head(
-		title('Envoyer un message')
-	    ) +
-		body(
-		    pageContent
-		)
-	),
-	headers: {
-	    'Content-Type': 'text/html'
-	}
-    };
+	processSend(context, req.body, pageContent => {
+	    context.res = {
+		status: 200,
+		body: html(
+		    head(
+			title('Envoyer un message')
+		    ) +
+			body(
+			    pageContent
+			)
+		),
+		headers: {
+		    'Content-Type': 'text/html'
+		}
+	    };
+	    context.done();
+	});
+    } else {
+	context.res = {
+	    status: 200,
+	    body: html(
+		head(
+		    title('Envoyer un message')
+		) +
+		    body(
+			contentSendForm
+		    )
+	    ),
+	    headers: {
+		'Content-Type': 'text/html'
+	    }
+	};
     context.done();
+    }
 };
