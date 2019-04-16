@@ -216,11 +216,12 @@ const processSend = (context, requestBody, callback) => {
 };
 
 const getGroupsFromJSON = (successCallback, errorCallback) => {
-    errorCallback("Could not load JSON");
+    successCallback({});
 };
 
 module.exports = function (context, req) {
     const successCallback = (groups) => {
+	context.log(groups);
 	let pageContent = contentSendForm;
 	if (req.method === 'POST') {
 	    processSend(context, req.body, pageContent => {
