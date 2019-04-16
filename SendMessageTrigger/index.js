@@ -143,9 +143,20 @@ const processSend = (context, requestBody, callback) => {
 		 '</p>');
     };
 
+    const passwordHashed = crypto.createHash('sha256').update(password, 'utf8').digest().toString('base64');
+    if (passwordHashed !== process.env.PASSWORD_HASH) {
+	context.log("Password does not match");
+	errorCallback("Mot de passe incorrect.")
+	return;
+    }
+    if (username !== CONNECTION_USERNAME) {
+	context.log("Username does not match");
+	errorCallback("Nom d'utilisateur incorrect");
+	return;
+    }
+
 
     if (process.env.PROVIDER_USED === 'ecall') {
-	const passwordHashed = crypto.createHash('sha256').update(password, 'utf8').digest().toString('base64');
 	context.log('password hashed is ' + passwordHashed);
 	sendSMS(context, username, password, recipient, message, successCallback, errorCallback);
     } else if (process.env.PROVIDER_USED === 'swisscom') {
@@ -157,7 +168,6 @@ const processSend = (context, requestBody, callback) => {
 module.exports = function (context, req) {
     let pageContent = contentSendForm;
     if (req.method === 'POST') {
-	context.log(req.params);
 	processSend(context, req.body, pageContent => {
 	    context.res = {
 		status: 200,
