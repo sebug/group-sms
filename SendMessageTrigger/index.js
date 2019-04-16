@@ -215,10 +215,32 @@ const processSend = (context, requestBody, callback) => {
     }
 };
 
+const getGroupsFromJSON = (successCallback, errorCallback) => {
+    errorCallback("Could not load JSON");
+};
+
 module.exports = function (context, req) {
-    let pageContent = contentSendForm;
-    if (req.method === 'POST') {
-	processSend(context, req.body, pageContent => {
+    const successCallback = (groups) => {
+	let pageContent = contentSendForm;
+	if (req.method === 'POST') {
+	    processSend(context, req.body, pageContent => {
+		context.res = {
+		    status: 200,
+		    body: html(
+			head(
+			    title('Envoyer un message')
+			) +
+			    body(
+				pageContent
+			    )
+		    ),
+		    headers: {
+			'Content-Type': 'text/html'
+		    }
+		};
+		context.done();
+	    });
+	} else {
 	    context.res = {
 		status: 200,
 		body: html(
@@ -226,7 +248,7 @@ module.exports = function (context, req) {
 			title('Envoyer un message')
 		    ) +
 			body(
-			    pageContent
+			    contentSendForm
 			)
 		),
 		headers: {
@@ -234,22 +256,24 @@ module.exports = function (context, req) {
 		}
 	    };
 	    context.done();
-	});
-    } else {
+	}
+    };
+    const errorCallback = (err) => {
 	context.res = {
-	    status: 200,
+	    status: 500,
 	    body: html(
 		head(
 		    title('Envoyer un message')
 		) +
 		    body(
-			contentSendForm
+			err
 		    )
 	    ),
 	    headers: {
 		'Content-Type': 'text/html'
 	    }
 	};
-    context.done();
-    }
+	context.done();
+    };
+    getGroupsFromJSON(successCallback, errorCallback);
 };
