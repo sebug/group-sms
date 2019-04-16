@@ -64,7 +64,9 @@ const contentSendForm = h1('Envoyer un message') +
 				confirmSend +
 				sendbutton());
 
-const processSend = (requestBody) => {
+const processSend = (context, requestBody) => {
+    const searchParams = new URLSearchParams(requestBody);
+    context.log(searchParams.get('message'));
     return '<p>Message envoyé</p>';
 };
 
@@ -72,7 +74,7 @@ module.exports = function (context, req) {
     let pageContent = contentSendForm;
     if (req.method === 'POST') {
 	context.log(req.params);
-	pageContent = processSend(req.body);
+	pageContent = processSend(context, req.body);
     }
     
     context.res = {
