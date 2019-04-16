@@ -210,7 +210,7 @@ const processSend = (context, requestBody, callback) => {
     if (process.env.PROVIDER_USED === 'ecall') {
 	sendSMSEcall(context, username, password, recipient, message, successCallback, errorCallback);
     } else if (process.env.PROVIDER_USED === 'swisscom') {
-	sendSMSSwisscom(context, process.env.TEST_NUMBER, message + ' Swisscom', successCallback, errorCallback);
+	sendSMSSwisscom(context, process.env.TEST_NUMBER, message, successCallback, errorCallback);
 	successCallback();
     }
 };
