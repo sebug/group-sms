@@ -42,6 +42,12 @@ const groups = [
     }
 ];
 
+const fieldset = (legend, inner) =>
+      '<fieldset>' +
+      '<legend>' + legend + '</legend>' +
+      inner +
+      '</fieldset>';
+
 module.exports = function (context, req) {
     context.res = {
 	status: 200,
@@ -52,6 +58,8 @@ module.exports = function (context, req) {
 		body(
 		    h1('Envoyer un message') +
 			form(
+			    fieldset('Groupe déstinataire',
+				     '') +
 			    sendbutton())
 		)
 	),
