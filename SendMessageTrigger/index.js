@@ -145,7 +145,7 @@ const processSend = (context, requestBody, callback) => {
 
 
     if (process.env.PROVIDER_USED === 'ecall') {
-	const passwordHashed = crypto.createHash('sha256').update(password, 'utf8').digest();
+	const passwordHashed = crypto.createHash('sha256').update(password, 'utf8').digest().toString('base64');
 	context.log('password hashed is ' + passwordHashed);
 	sendSMS(context, username, password, recipient, message, successCallback, errorCallback);
     } else if (process.env.PROVIDER_USED === 'swisscom') {
