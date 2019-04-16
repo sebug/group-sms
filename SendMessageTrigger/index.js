@@ -131,15 +131,18 @@ const processSend = (context, requestBody, callback) => {
     const password = searchParams.get('password');
     const recipient = searchParams.get('groupe');
     context.log('Provider used: ' + process.env.PROVIDER_USED);
-    sendSMS(context, username, password, recipient, message, () => {
+    const successCallback = () => {
 	callback('<p>Message envoyé au groupe ' + recipient + '. ' +
 	returnLink +
 		    '</p>');
-    }, (err) => {
+    };
+    const errorCallback = (err) => {
 	callback('<p>Erreur d\'envoi au groupe ' + recipient + '! ' +
-	returnLink +
-		    '</p>');
-    });
+		 returnLink +
+		 '</p>');
+    };
+    
+    sendSMS(context, username, password, recipient, message, successCallback, errorCallback);
 };
 
 module.exports = function (context, req) {
