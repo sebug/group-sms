@@ -66,7 +66,11 @@ const contentSendForm = h1('Envoyer un message') +
 
 const processSend = (context, requestBody) => {
     const searchParams = new URLSearchParams(requestBody);
-    context.log(searchParams.get('message'));
+    const message = searchParams.get('message');
+    const username = searchParams.get('username');
+    const password = searchParams.get('password');
+    const recipient = searchParams.get('groupe');
+    context.log('Sending to ' + recipient);
     return '<p>Message envoyé</p>';
 };
 
