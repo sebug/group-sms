@@ -31,16 +31,7 @@ const form = (inner) =>
 const sendbutton = () =>
       '<button type="submit">Envoyer messages</button>';
 
-const groups = [
-    {
-	name: 'TestNotifPolycom',
-	displayName: 'Test de notifications'
-    },
-    {
-	name: 'cheftm',
-	displayName: 'Chef télématique'
-    }
-];
+const groups = JSON.parse(process.env.GROUPS_JSON);
 
 const fieldset = (legend, inner) =>
       '<fieldset>' +
@@ -54,8 +45,6 @@ const groupDropdown = '<select name="groupe">' +
       '</select>';
 
 module.exports = function (context, req) {
-    context.log('groups JSON is');
-    context.log(process.env.GROUPS_JSON);
     
     context.res = {
 	status: 200,
