@@ -165,8 +165,6 @@ const sendSMSSwisscom = (context, targetNumber, message, success, error) => {
     const req = https.request(options, (res) => {
 	context.log(`status code: ${res.statusCode}`);
 
-	context.log(res.headers);
-
 	success();
 
 	res.on('data', (d) => {
