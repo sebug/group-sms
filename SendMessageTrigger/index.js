@@ -23,10 +23,18 @@ const title = (t) =>
 const h1 = (t) =>
       '<h1>' + t + '</h1>';
 
+const form = (inner) =>
+      '<form method="post" action="/api/SendMessageTrigger">' +
+      inner +
+      '</form>';
+
+const sendbutton = () =>
+      '<button type="submit">Envoyer messages</button>';
+
 const groups = [
     {
-	name: 'pbc2019',
-	displayName: 'Cours protection des biens culturels 2019'
+	name: 'TestNotifPolycom',
+	displayName: 'Test de notifications'
     },
     {
 	name: 'cheftm',
@@ -42,7 +50,9 @@ module.exports = function (context, req) {
 		title('Envoyer un message')
 	    ) +
 		body(
-		    h1('Envoyer un message')
+		    h1('Envoyer un message') +
+			form(
+			    sendbutton())
 		)
 	),
 	headers: {
