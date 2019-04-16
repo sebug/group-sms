@@ -149,7 +149,7 @@ const processSend = (context, requestBody, callback) => {
 	errorCallback("Mot de passe incorrect.")
 	return;
     }
-    if (username !== CONNECTION_USERNAME) {
+    if (username !== process.env.CONNECTION_USERNAME) {
 	context.log("Username does not match");
 	errorCallback("Nom d'utilisateur incorrect");
 	return;
@@ -157,7 +157,6 @@ const processSend = (context, requestBody, callback) => {
 
 
     if (process.env.PROVIDER_USED === 'ecall') {
-	context.log('password hashed is ' + passwordHashed);
 	sendSMS(context, username, password, recipient, message, successCallback, errorCallback);
     } else if (process.env.PROVIDER_USED === 'swisscom') {
 	context.log("TBD");
