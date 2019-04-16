@@ -38,7 +38,13 @@ const form = (inner) =>
 const sendbutton = () =>
       '<button type="submit">Envoyer messages</button>';
 
-const groups = JSON.parse(process.env.GROUPS_JSON);
+const getGroupsFromObject = (groupObject) =>
+      Object.keys(groupObject).map(g => {
+	  return {
+	      name: g,
+	      displayName: g
+	  };
+      });
 
 const fieldset = (legend, inner) =>
       '<fieldset>' +
@@ -46,7 +52,7 @@ const fieldset = (legend, inner) =>
       inner +
       '</fieldset>';
 
-const groupDropdown = '<select name="groupe" required>' +
+const groupDropdown = (groups) => '<select name="groupe" required>' +
       groups.map(group =>
 		 '<option value="' + group.name + '">' + group.displayName + '</option>').join(' ') +
       '</select>';
@@ -60,10 +66,10 @@ const confirmSend = '<p class="confirm-send-info">En appuyant sur "Envoyer messa
 const usernameAndPassword = '<p><label>Nom d\'utilisateur: <input name="username" required></label><br />' +
       '<label>Mot de passe: <input name="password" type="password" required></label></p>';
 
-const contentSendForm = h1('Envoyer un message pour astreints Valavran') +
+const contentSendForm = (groupsArray) => h1('Envoyer un message pour astreints Valavran') +
 			form(
 			    fieldset('Groupe destinataire',
-				     groupDropdown) +
+				     groupDropdown(groupsArray)) +
 				fieldset('Message à envoyer',
 					 messageInput) +
 				fieldset('Autorisation',
@@ -236,8 +242,8 @@ const getGroupsFromJSON = (context, successCallback, errorCallback) => {
 
 module.exports = function (context, req) {
     const successCallback = (groups) => {
-	context.log(groups);
-	let pageContent = contentSendForm;
+	const groupsArray = getGroupsFromObject(groups);
+	let pageContent = contentSendForm(groupsArray);
 	if (req.method === 'POST') {
 	    processSend(context, req.body, pageContent => {
 		context.res = {
@@ -264,7 +270,7 @@ module.exports = function (context, req) {
 			title('Envoyer un message')
 		    ) +
 			body(
-			    contentSendForm
+			    contentSendForm(groupsArray);
 			)
 		),
 		headers: {
