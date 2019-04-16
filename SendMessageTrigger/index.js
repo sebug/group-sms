@@ -65,7 +65,9 @@ const contentSendForm = h1('Envoyer un message') +
 				sendbutton());
 
 module.exports = function (context, req) {
-    const pageContent = contentSendForm;
+    let pageContent = contentSendForm;
+    context.log(req.method);
+    context.log(req.body);
     
     context.res = {
 	status: 200,
