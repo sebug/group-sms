@@ -221,8 +221,8 @@ const getGroupsFromJSON = (context, successCallback, errorCallback) => {
 	context.log(`groups status code: ${res.statusCode}`);
 
 	res.on('data', (d) => {
-	    context.log('' + d);
-	    successCallback({});
+	    const groups = JSON.parse('' + d);
+	    successCallback(groups);
 	});
     });
 
