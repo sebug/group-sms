@@ -50,6 +50,9 @@ const messageInput = '<textarea name="message">' +
 const confirmSend = '<p class="confirm-send-info">En appuyant sur "Envoyer messages", tous les destinataires dans le groupe choisi recevront un SMS.</p>' +
       '<p class="confirm-send"><label><input type="checkbox" name="iconfirm" />Je confirme</label></p>';
 
+const usernameAndPassword = '<p><label>Nom d\'utilisateur: <input name="username" /></label><br />' +
+      '<label>Mot de passe: <input name="password" type="password" /></label></p>';
+
 module.exports = function (context, req) {
     
     context.res = {
@@ -65,6 +68,8 @@ module.exports = function (context, req) {
 				     groupDropdown) +
 				fieldset('Message à envoyer',
 					 messageInput) +
+				fieldset('Autorisation',
+					 usernameAndPassword) +
 				confirmSend +
 			    sendbutton())
 		)
