@@ -48,6 +48,11 @@ const fieldset = (legend, inner) =>
       inner +
       '</fieldset>';
 
+const groupDropdown = '<select name="groupe">' +
+      groups.map(group =>
+		 '<option value="' + group.name + '">' + group.displayName + '</option>').join(' ') +
+      '</select>';
+
 module.exports = function (context, req) {
     context.res = {
 	status: 200,
@@ -58,8 +63,8 @@ module.exports = function (context, req) {
 		body(
 		    h1('Envoyer un message') +
 			form(
-			    fieldset('Groupe déstinataire',
-				     '') +
+			    fieldset('Groupe destinataire',
+				     groupDropdown()) +
 			    sendbutton())
 		)
 	),
