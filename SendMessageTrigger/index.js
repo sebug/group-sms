@@ -67,7 +67,7 @@ module.exports = function (context, req) {
 		    h1('Envoyer un message') +
 			form(
 			    fieldset('Groupe destinataire',
-				     groupDropdown()) +
+				     groupDropdown) +
 			    sendbutton())
 		)
 	),
