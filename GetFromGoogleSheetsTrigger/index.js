@@ -13,6 +13,104 @@
 const {google} = require('googleapis');
 const crypto = require('crypto');
 
+// If modifying these scopes, delete token.json.
+const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
+// The token will be read from the environment variable
+
+/**
+ * Create an OAuth2 client with the given credentials, and then execute the
+ * given callback function.
+ * @param {function} callback The callback to call with the authorized client.
+ */
+function authorize(callback) {
+  const {client_secret, client_id, redirect_uris} = credentials.installed;
+  const oAuth2Client = new google.auth.OAuth2(
+      client_id, client_secret, redirect_uris[0]);
+
+    oAuth2Client.setCredentials(JSON.parse(process.env.GOOGLE_SHEETS_TOKEN));
+    callback(oAuth2Client);
+}
+
+function getAstreintsFromSheet(auth, sheetName) {
+    return new Promise((resolve, reject) => {
+	const sheets = google.sheets({version: 'v4', auth});
+	sheets.spreadsheets.values.get({
+	    spreadsheetId: '1dUMmkTSxyzGJWoSARfyTkJO6hGlZ8fo8DB3tAXLxihY',
+	    range: 'TestNotifPolycom!A2:C',
+	}, (err, res) => {
+	    if (err) {
+		reject('The API returned an error: ' + err);
+		return;
+	    }
+	    const rows = res.data.values;
+	    if (rows.length) {
+		resolve({
+		    sheetName: sheetName,
+		    rows: rows.map((row) => {
+			let r = {
+			    firstName: row[0],
+			    lastName: row[1],
+			    number: row[2]
+			};
+			if (r.number.toString().indexOf('00') === 0) {
+			    r.number = '+' + r.number.substr(2);
+			}
+			return r;
+		    })
+		});
+	    } else {
+		resolve({
+		    sheetName: sheetName,
+		    rows: []
+		});
+	    }
+	});
+    });
+}
+
+/**
+ * Gets JSON for the different groups
+ * @see https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
+ * @param {google.auth.OAuth2} auth The authenticated Google OAuth client.
+ */
+function listAstreints(auth, context) {
+    context.log('List astreints');
+    const groups = {};
+    const sheets = google.sheets({version: 'v4', auth});
+    sheets.spreadsheets.get({
+	spreadsheetId: '1dUMmkTSxyzGJWoSARfyTkJO6hGlZ8fo8DB3tAXLxihY'
+    }, (err, res) => {
+	if (err) {
+	    context.res = {
+		status: 400,
+		body: 'The API returned an error: ' + err
+	    };
+	    context.done();
+	    return;
+	}
+	const sheetNames = res.data.sheets.map((sheet) => {
+	    return sheet.properties.title;
+	});
+	const sheetPromises = sheetNames.map((name) => {
+	    return getAstreintsFromSheet(auth, name);
+	});
+	Promise.all(sheetPromises).then(function (results) {
+	    const groups = {};
+	    for (let sheet of results) {
+		groups[sheet.sheetName] = sheet.rows;
+	    }
+	    context.res = {
+		status: 200,
+		body: groups,
+		headers: {
+		    'Content-Type': 'application/json'
+		}
+	    };
+	    context.done();
+	});
+    });
+}
+
 // Copy paste (shame)
 const verifyCredentials = (context, username, password, continuation) => {
     const forbidden = (message) => {
@@ -45,10 +143,8 @@ module.exports = (context, req) => {
     context.log(process.env.GOOGLE_SHEETS_TOKEN);
     verifyCredentials(context, req.query.username, req.query.password,
 		      () => {
-			  context.res = {
-			      status: 200,
-			      body: 'Test getting from google docs authenticated'
-			  };
-			  context.done();
+			  authorize(auth => {
+			      listAstreints(auth, context);
+			  });
 		      });
 };
