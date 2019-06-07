@@ -74,8 +74,8 @@ const returnGroupResults = (context, req) => {
 	context.done();
     }, (err) => {
 	context.res = {
-	    status: 400,
-	    body: "Groups not found"
+	    status: 404,
+	    body: "Groupes pas trouvés"
 	};
 	context.done();
     });
