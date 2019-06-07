@@ -97,7 +97,7 @@ const updateGroupJavascript = () => {
 	}
 	let res = '<h2>Astreints:</h2><ul>';
 	for (let member of members) {
-	    res += '<li>' + member.firstName + ' ' + member.lastName + '(' +
+	    res += '<li>' + member.firstName + ' ' + member.lastName + ' (' +
 		member.number + ')</li>';
 	}
 	res += '</ul>';
