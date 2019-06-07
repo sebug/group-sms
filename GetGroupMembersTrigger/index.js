@@ -14,25 +14,32 @@
 const https = require('https');
 const crypto = require('crypto');
 
-module.exports = (context, req) => {
-    if (!req.query.username || !req.query.password) {
+const verifyCredentials = (context, username, password, andThen) => {
+    if (!username || !password) {
 	context.res = {
 	    status: 400,
-	    body: "Veuillez donner votre nom d'utilisateur et mot de passe"
+	    body: "Veuillez donner votre nom d'utilisateur et mot de passe!"
 	};
 	context.done();
 	return;
     }
-    context.res = {
-	status: 200,
-	body: {
-	    groupName: 'Test Group',
-	    members: [
-		]
-	},
-	headers: {
-	    'Content-Type': 'application/json'
-	}
-    };
-    context.done();
+    andThen();
+};
+
+module.exports = (context, req) => {
+    verifyCredentials(context, req.query.username, req.query.password,
+		      () => {
+			  context.res = {
+			      status: 200,
+			      body: {
+				  groupName: 'Test Group 2',
+				  members: [
+				  ]
+			      },
+			      headers: {
+				  'Content-Type': 'application/json'
+			      }
+			  };
+			  context.done();
+		      });
 };
