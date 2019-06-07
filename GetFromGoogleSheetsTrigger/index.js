@@ -12,11 +12,42 @@
 */
 const {google} = require('googleapis');
 
+// Copy paste (shame)
+const verifyCredentials = (context, username, password, continuation) => {
+    const forbidden = (message) => {
+        context.res = {
+            status: 400,
+            body: message
+        };
+        context.done();
+    };
+    
+    if (!username || !password) {
+        forbidden("Veuillez donner votre nom d'utilisateur et mot de passe!");
+        return;
+    }
+    const passwordHashed = crypto.createHash('sha256').update(password, 'utf8').digest().toString('base64');
+    if (passwordHashed !== process.env.PASSWORD_HASH) {
+        context.log("Password does not match");
+        forbidden("Mot de passe incorrect");
+        return;
+    }
+    if (username !== process.env.CONNECTION_USERNAME) {
+        context.log("Username does not match");
+        forbidden("Nom d'utilisateur incorrect");
+        return;
+    }
+    continuation();
+};
+
 module.exports = (context, req) => {
     context.log(process.env.GOOGLE_SHEETS_TOKEN);
-    context.res = {
-	status: 200,
-	body: 'Test getting from google docs'
-    };
-    context.done();
+    verifyCredentials(context, req.query.username, req.query.password,
+		      () => {
+			  context.res = {
+			      status: 200,
+			      body: 'Test getting from google docs authenticated'
+			  };
+			  context.done();
+		      });
 };
