@@ -41,20 +41,51 @@ const verifyCredentials = (context, username, password, continuation) => {
     continuation();
 };
 
+const getGroupsFromJSON = (context, successCallback, errorCallback) => {
+    const url = new URL(process.env.GROUPS_URL);
+    const req = https.request(url, {}, (res) => {
+	context.log(`groups status code: ${res.statusCode}`);
+
+	res.on('data', (d) => {
+	    const groups = JSON.parse('' + d);
+	    successCallback(groups);
+	});
+    });
+
+    req.on('error', (err) => {
+	context.log(err);
+	errorCallback(err);
+    });
+
+    req.end();
+};
+
+const returnGroupResults = (context, req) => {
+    getGroupsFromJSON(context, (groups) => {
+	context.res = {
+	    status: 200,
+	    body: {
+		groupName: 'Test Group 5',
+		members: [
+		]
+	    },
+	    headers: {
+		'Content-Type': 'application/json'
+	    }
+	};
+	context.done();
+    }, (err) => {
+	context.res = {
+	    status: 400,
+	    body: "Groups not found"
+	};
+	context.done();
+    });
+};
+
 module.exports = (context, req) => {
     verifyCredentials(context, req.query.username, req.query.password,
 		      () => {
-			  context.res = {
-			      status: 200,
-			      body: {
-				  groupName: 'Test Group 3',
-				  members: [
-				  ]
-			      },
-			      headers: {
-				  'Content-Type': 'application/json'
-			      }
-			  };
-			  context.done();
+			  returnGroupResults(context, req);
 		      });
 };
