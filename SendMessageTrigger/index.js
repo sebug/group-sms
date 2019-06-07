@@ -91,6 +91,19 @@ const updateGroupJavascript = () => {
     const passwordInput = document.querySelector('#password');
     const groupDropdown = document.querySelector('#groupe');
 
+    const createListFromMembers = (members) => {
+	if (!members || !members.length) {
+	    return '<p>Aucun astreint dans ce groupe</p>';
+	}
+	let res = '<ul>';
+	for (let member of members) {
+	    res += '<li>' + member.firstName + ' ' + member.lastName + '(' +
+		member.number + ')</li>';
+	}
+	res += '</ul>';
+	return res;
+    };
+
     const getGroups = (username, password, groupName) => {
 	return fetch('/api/GetGroupMembersTrigger?username=' + username +
 		     '&password=' + password +
@@ -105,7 +118,8 @@ const updateGroupJavascript = () => {
 	const groupName = groupDropdown.value;
 	if (username && password && groupName) {
 	    getGroups(username, password, groupName).then(members => {
-		console.log(members);
+		const membersHtml = createListFromMembers(members);
+		console.log(membersHtml);
 	    }, (err) => {
 		alert('Erreur - pas pu obtenir les membres du groupe');
 	    });
