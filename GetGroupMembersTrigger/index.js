@@ -62,9 +62,11 @@ const getGroupsFromJSON = (context, successCallback, errorCallback) => {
 
 const returnGroupResults = (context, req) => {
     getGroupsFromJSON(context, (groups) => {
+	const correspodingGroup = groups[req.query.groupName] || [];
+	
 	context.res = {
 	    status: 200,
-	    body: groups,
+	    body: correspondingGroup,
 	    headers: {
 		'Content-Type': 'application/json'
 	    }
