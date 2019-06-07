@@ -41,8 +41,8 @@ const verifyCredentials = (context, username, password, continuation) => {
     continuation();
 };
 
-const getGroupsFromJSON = (context, successCallback, errorCallback) => {
-    const url = new URL(process.env.GROUPS_URL);
+const getGroupsFromJSON = (context, username, password, successCallback, errorCallback) => {
+    const url = new URL("https://group-sms.azurewebsites.net/api/GetFromGoogleSheetsTrigger?username=" + username + '&password=' + password);
     const req = https.request(url, {}, (res) => {
 	context.log(`groups status code: ${res.statusCode}`);
 
@@ -61,7 +61,7 @@ const getGroupsFromJSON = (context, successCallback, errorCallback) => {
 };
 
 const returnGroupResults = (context, req) => {
-    getGroupsFromJSON(context, (groups) => {
+    getGroupsFromJSON(context, req.query.username, req.query.password, (groups) => {
 	context.log('got groups');
 	const correspondingGroup = groups[req.query.groupName] || [];
 
