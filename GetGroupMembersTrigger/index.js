@@ -14,16 +14,31 @@
 const https = require('https');
 const crypto = require('crypto');
 
-const verifyCredentials = (context, username, password, andThen) => {
-    if (!username || !password) {
+const verifyCredentials = (context, username, password, continuation) => {
+    const forbidden = (message) => {
 	context.res = {
 	    status: 400,
-	    body: "Veuillez donner votre nom d'utilisateur et mot de passe!"
+	    body: message
 	};
 	context.done();
+    };
+    
+    if (!username || !password) {
+	forbidden("Veuillez donner votre nom d'utilisateur et mot de passe!");
 	return;
     }
-    andThen();
+    const passwordHashed = crypto.createHash('sha256').update(password, 'utf8').digest().toString('base64');
+    if (passwordHashed !== process.env.PASSWORD_HASH) {
+	context.log("Password does not match");
+	forbidden("Mot de passe incorrect");
+	return;
+    }
+    if (username !== process.env.CONNECTION_USERNAME) {
+	context.log("Username does not match");
+	forbidden("Nom d'utilisateur incorrect");
+	return;
+    }
+    continuation();
 };
 
 module.exports = (context, req) => {
@@ -32,7 +47,7 @@ module.exports = (context, req) => {
 			  context.res = {
 			      status: 200,
 			      body: {
-				  groupName: 'Test Group 2',
+				  groupName: 'Test Group 3',
 				  members: [
 				  ]
 			      },
