@@ -89,8 +89,10 @@ const updateGroupJavascript = () => {
     return `<script>
 	const userNameInput = document.querySelector('#username');
     const passwordInput = document.querySelector('#password');
+    const groupDropdown = document.querySelector('#groupe');
     console.log(userNameInput);
     console.log(passwordInput);
+    console.log(groupDropdown);
 	</script>`;
 };
 
