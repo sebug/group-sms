@@ -404,7 +404,7 @@ module.exports = function (context, req) {
     let username = null;
     let password = null;
     if (req.body) {
-	const searchParams = new URLSearchParams(requestBody);
+	const searchParams = new URLSearchParams(req.body);
 	username = searchParams.get('username');
 	password = searchParams.get('password');
     }
