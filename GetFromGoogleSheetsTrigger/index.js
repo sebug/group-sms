@@ -10,6 +10,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+const {google} = require('googleapis');
 
 module.exports = (context, req) => {
     context.log(process.env.GOOGLE_SHEETS_TOKEN);
