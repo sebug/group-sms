@@ -106,10 +106,11 @@ const updateGroupJavascript = () => {
 
     const getGroups = (username, password, groupName) => {
 	return fetch('/api/GetFromGoogleSheetsTrigger?username=' + username +
-		     '&password=' + password +
-		     '&groupName=' + groupName).then(response => {
+		     '&password=' + password).then(response => {
 			 return response.json();
-		     });
+		     }).then(allGroups => {
+                         return allGroups[groupName];
+                     });
     };
 
     const verifyParametersSend = () => {
