@@ -90,9 +90,20 @@ const updateGroupJavascript = () => {
 	const userNameInput = document.querySelector('#username');
     const passwordInput = document.querySelector('#password');
     const groupDropdown = document.querySelector('#groupe');
-    console.log(userNameInput);
-    console.log(passwordInput);
-    console.log(groupDropdown);
+
+    const verifyParametersSend = () => {
+	const username = userNameInput.value;
+	const password = passwordInput.value;
+	const groupName = groupDropdown.value;
+	console.log(username);
+	console.log(password);
+	console.log(groupName);
+	console.log('Verify parameters send');
+    };
+    
+    userNameInput.addEventListener('change', verifyParametersSend);
+    passwordInput.addEventListener('change', verifyParametersSend);
+    groupDropdown.addEventListener('change', verifyParametersSend);
 	</script>`;
 };
 
