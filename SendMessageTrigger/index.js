@@ -105,7 +105,7 @@ const updateGroupJavascript = () => {
     };
 
     const getGroups = (username, password, groupName) => {
-	return fetch('/api/GetGroupMembersTrigger?username=' + username +
+	return fetch('/api/GetFromGoogleSheetsTrigger?username=' + username +
 		     '&password=' + password +
 		     '&groupName=' + groupName).then(response => {
 			 return response.json();
