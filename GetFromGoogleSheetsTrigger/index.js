@@ -17,6 +17,8 @@ const crypto = require('crypto');
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 // The token will be read from the environment variable
 
+const credentials = JSON.parse(process.env.GOOGLE_SHEETS_CREDENTIALS);
+
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
  * given callback function.
