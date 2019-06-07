@@ -91,14 +91,25 @@ const updateGroupJavascript = () => {
     const passwordInput = document.querySelector('#password');
     const groupDropdown = document.querySelector('#groupe');
 
+    const getGroups = (username, password, groupName) => {
+	return fetch('/api/GetGroupMembersTrigger?username=' + username +
+		     '&password=' + password +
+		     '&groupName=' + groupName).then(response => {
+			 return response.json();
+		     });
+    };
+
     const verifyParametersSend = () => {
 	const username = userNameInput.value;
 	const password = passwordInput.value;
 	const groupName = groupDropdown.value;
-	console.log(username);
-	console.log(password);
-	console.log(groupName);
-	console.log('Verify parameters send');
+	if (username && password && groupName) {
+	    getGroups(username, password, groupName).then(members => {
+		console.log(members);
+	    }, (err) => {
+		alert('Erreur - pas pu obtenir les membres du groupe');
+	    });
+	}
     };
     
     userNameInput.addEventListener('change', verifyParametersSend);
