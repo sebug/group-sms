@@ -104,11 +104,15 @@ const updateGroupJavascript = () => {
 	return res;
     };
 
-    const getGroups = (username, password, groupName) => {
-	return fetch('/api/GetFromGoogleSheetsTrigger?username=' + username +
+    const ensureGroups = (username, password) => {
+        return fetch('/api/GetFromGoogleSheetsTrigger?username=' + username +
 		     '&password=' + password).then(response => {
-			 return response.json();
-		     }).then(allGroups => {
+            return response.json();
+        });
+    };
+
+    const getGroups = (username, password, groupName) => {
+	return ensureGroups(username, password).then(allGroups => {
                          return allGroups[groupName];
                      });
     };
@@ -117,6 +121,14 @@ const updateGroupJavascript = () => {
 	const username = userNameInput.value;
 	const password = passwordInput.value;
 	const groupName = groupDropdown.value;
+
+        if (username && password) {
+            ensureGroups(username, password).then(groups => {
+                console.log('Groups ensured');
+                console.log(groups);
+            });
+        }
+
 	if (username && password && groupName) {
 	    getGroups(username, password, groupName).then(members => {
 		const membersHtml = createListFromMembers(members);
