@@ -95,7 +95,7 @@ const updateGroupJavascript = () => {
 	if (!members || !members.length) {
 	    return '<p>Aucun astreint dans ce groupe</p>';
 	}
-	let res = '<ul>';
+	let res = '<h2>Astreints:</h2><ul>';
 	for (let member of members) {
 	    res += '<li>' + member.firstName + ' ' + member.lastName + '(' +
 		member.number + ')</li>';
@@ -119,7 +119,9 @@ const updateGroupJavascript = () => {
 	if (username && password && groupName) {
 	    getGroups(username, password, groupName).then(members => {
 		const membersHtml = createListFromMembers(members);
-		console.log(membersHtml);
+		const membersDiv = document.querySelector('#members');
+		membersDiv.innerHTML = membersHtml;
+		console.log(members);
 	    }, (err) => {
 		alert('Erreur - pas pu obtenir les membres du groupe');
 	    });
