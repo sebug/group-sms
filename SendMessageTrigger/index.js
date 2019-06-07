@@ -70,7 +70,7 @@ const fieldset = (legend, inner) =>
       inner +
       '</fieldset>';
 
-const groupDropdown = (groups) => '<select name="groupe" required>' +
+const groupDropdown = (groups) => '<select name="groupe" id="groupe" required>' +
       groups.map(group =>
 		 '<option value="' + group.name + '">' + group.displayName + '</option>').join(' ') +
       '</select>';
@@ -81,8 +81,14 @@ const messageInput = '<textarea name="message" rows="4" required>' +
 const confirmSend = '<p class="confirm-send-info">En appuyant sur "Envoyer messages", tous les destinataires dans le groupe choisi recevront un SMS.</p>' +
       '<p class="confirm-send"><label><input type="checkbox" name="iconfirm" required />Je confirme</label></p>';
 
-const usernameAndPassword = '<p><label>Nom d\'utilisateur: <input name="username" required></label><br />' +
-      '<label>Mot de passe: <input name="password" type="password" required></label></p>';
+const usernameAndPassword = '<p><label>Nom d\'utilisateur: <input name="username" id="username" required></label><br />' +
+      '<label>Mot de passe: <input name="password" id="password" type="password" required></label></p>';
+
+const updateGroupJavascript = () => {
+    return "<script>" +
+	"console.log('Test');" +
+	"</script>";
+};
 
 const contentSendForm = (groupsArray) => h1('Envoyer un message pour astreints Valavran') +
 			form(
@@ -93,7 +99,10 @@ const contentSendForm = (groupsArray) => h1('Envoyer un message pour astreints V
 				fieldset('Autorisation',
 					 usernameAndPassword) +
 				confirmSend +
-				sendbutton());
+				sendbutton()) +
+      updateGroupJavascript();
+
+
 
 const returnLink = '<a href="/api/SendMessageTrigger">Nouveau message</a>';
 
