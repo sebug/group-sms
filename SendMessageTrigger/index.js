@@ -73,7 +73,8 @@ const fieldset = (legend, inner) =>
 const groupDropdown = (groups) => '<select name="groupe" id="groupe" required>' +
       groups.map(group =>
 		 '<option value="' + group.name + '">' + group.displayName + '</option>').join(' ') +
-      '</select>';
+      '</select>' +
+      '<div id="members"></div>';
 
 const messageInput = '<textarea name="message" rows="4" required>' +
       '</textarea>';
@@ -86,7 +87,10 @@ const usernameAndPassword = '<p><label>Nom d\'utilisateur: <input name="username
 
 const updateGroupJavascript = () => {
     return `<script>
-	console.log('Test 2');
+	const userNameInput = document.querySelector('#username');
+    const passwordInput = document.querySelector('#password');
+    console.log(userNameInput);
+    console.log(passwordInput);
 	</script>`;
 };
 
