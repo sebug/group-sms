@@ -85,9 +85,9 @@ const usernameAndPassword = '<p><label>Nom d\'utilisateur: <input name="username
       '<label>Mot de passe: <input name="password" id="password" type="password" required></label></p>';
 
 const updateGroupJavascript = () => {
-    return "<script>" +
-	"console.log('Test');" +
-	"</script>";
+    return `<script>
+	console.log('Test 2');
+	</script>`;
 };
 
 const contentSendForm = (groupsArray) => h1('Envoyer un message pour astreints Valavran') +
