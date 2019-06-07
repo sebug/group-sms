@@ -104,10 +104,22 @@ const updateGroupJavascript = () => {
 	return res;
     };
 
+    let gotGroups = null;
+
     const ensureGroups = (username, password) => {
         return fetch('/api/GetFromGoogleSheetsTrigger?username=' + username +
 		     '&password=' + password).then(response => {
             return response.json();
+        }).then(groups => {
+          if (!gotGroups && groups) {
+            gotGroups = groups;
+            let html = '';
+            Object.keys(groups).forEach(k => {
+               html += '<option value="' + k + '">' + k + '</option>';
+            });
+            groupDropdown.innerHTML = html;
+          }
+          return groups;
         });
     };
 
