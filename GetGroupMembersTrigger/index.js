@@ -64,11 +64,7 @@ const returnGroupResults = (context, req) => {
     getGroupsFromJSON(context, (groups) => {
 	context.res = {
 	    status: 200,
-	    body: {
-		groupName: 'Test Group 5',
-		members: [
-		]
-	    },
+	    body: groups,
 	    headers: {
 		'Content-Type': 'application/json'
 	    }
