@@ -15,6 +15,14 @@ const https = require('https');
 const crypto = require('crypto');
 
 module.exports = (context, req) => {
+    if (!req.query.username || !req.query.password) {
+	context.res = {
+	    status: 400,
+	    body: "Veuillez donner votre nom d'utilisateur et mot de passe"
+	};
+	context.done();
+	return;
+    }
     context.res = {
 	status: 200,
 	body: {
