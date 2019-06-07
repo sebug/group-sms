@@ -11,6 +11,7 @@
    limitations under the License.
 */
 const {google} = require('googleapis');
+const crypto = require('crypto');
 
 // Copy paste (shame)
 const verifyCredentials = (context, username, password, continuation) => {
