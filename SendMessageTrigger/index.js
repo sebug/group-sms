@@ -311,7 +311,8 @@ const processSend = (context, groups, requestBody, callback) => {
 	sendSMSEcall(context, username, password, recipient, message, successCallback, errorCallback);
     } else if (process.env.PROVIDER_USED === 'swisscom') {
 	const peopleToSendTo = groups[recipient];
-	const sendPromises = peopleToSendTo.map(person => new Promise((resolve, reject) => {
+	const sendPromises = peopleToSendTo.filter(person => person.number).map(person => new Promise((resolve, reject) => {
+	    person.number = person.number.replace(/ /g, '');
 	    context.log('Sending to ' + person.firstName + ' ' + person.lastName + ' ' + person.number);
 	    sendSMSSwisscom(context, person.number, message, resolve, (err) => {
 		context.log('Error sending to ' + person.number);
