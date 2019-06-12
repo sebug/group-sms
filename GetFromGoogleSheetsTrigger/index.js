@@ -33,7 +33,7 @@ function authorize(callback) {
     callback(oAuth2Client);
 }
 
-function getAstreintsFromSheet(auth, sheetName) {
+function getAstreintsFromSheet(auth, sheetName, context) {
     return new Promise((resolve, reject) => {
 	const sheets = google.sheets({version: 'v4', auth});
 	sheets.spreadsheets.values.get({
@@ -41,6 +41,7 @@ function getAstreintsFromSheet(auth, sheetName) {
 	    range: sheetName + '!A2:C',
 	}, (err, res) => {
 	    if (err) {
+		context.log(err);
 		reject('The API returned an error: ' + err);
 		return;
 	    }
@@ -94,7 +95,7 @@ function listAstreints(auth, context) {
 	    return sheet.properties.title;
 	});
 	const sheetPromises = sheetNames.map((name) => {
-	    return getAstreintsFromSheet(auth, name);
+	    return getAstreintsFromSheet(auth, name, context);
 	});
 	Promise.all(sheetPromises).then(function (results) {
 	    const groups = {};
