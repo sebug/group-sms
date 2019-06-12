@@ -74,6 +74,47 @@ function getAstreintsFromSheet(auth, sheetName, context) {
     });
 }
 
+// get full name, normalized
+function getFullName(person) {
+    return ((person.firstName || '') +
+			      ' ' +
+	    (person.lastName || '')).toLowerCase()
+	.replace('é','e')
+	.replace('ë','e')
+	.replace('ä','a')
+	.replace('ô','o');
+}
+
+function getFullNameToNumberDict(groups) {
+    let dict = {};
+    for (let k of Object.keys(groups)) {
+	const ll = groups[k];
+	for (let person of ll) {
+	    const fullName = getFullName(person);
+	    if (person.number &&  /^[0-9 +]+$/.test(person.number) &&
+	       !dict[fullName]) {
+		dict[fullName] = person.number;
+	    }
+	}
+    }
+    return dict;
+}
+
+function replacePositionsWithNumbers(groups, dict) {
+    for (let k of Object.keys(groups)) {
+	const ll = groups[k];
+	for (let person of ll) {
+	    const fullName = getFullName(person);
+	    if (!person.number || !(/^[0-9 +]+$/.test(person.number))) {
+		if (dict[fullName]) {
+		    person.number = dict[fullName];
+		}
+	    }
+	}
+    }
+}
+
+
 /**
  * Gets JSON for the different groups
  * @see https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
@@ -105,6 +146,8 @@ function listAstreints(auth, context) {
 	    for (let sheet of results) {
 		groups[sheet.sheetName] = sheet.rows;
 	    }
+	    let dict = getFullNameToNumberDict(groups);
+            replacePositionsWithNumbers(groups, dict);
 	    context.res = {
 		status: 200,
 		body: groups,
