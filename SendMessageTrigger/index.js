@@ -288,7 +288,10 @@ const processSend = (context, groups, requestBody, callback) => {
 	const peopleToSendTo = groups[recipient];
 	const sendPromises = peopleToSendTo.map(person => new Promise((resolve, reject) => {
 	    context.log('Sending to ' + person.firstName + ' ' + person.lastName + ' ' + person.number);
-	    sendSMSSwisscom(context, person.number, message, resolve, reject);
+	    sendSMSSwisscom(context, person.number, message, resolve, (err) => {
+		context.log('Error sending to ' + person.number);
+		resolve();
+	    });
 	}));
 	Promise.all(sendPromises).then(successCallback, errorCallback);
     }
