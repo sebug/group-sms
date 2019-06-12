@@ -38,7 +38,7 @@ function getAstreintsFromSheet(auth, sheetName) {
 	const sheets = google.sheets({version: 'v4', auth});
 	sheets.spreadsheets.values.get({
 	    spreadsheetId: '1dUMmkTSxyzGJWoSARfyTkJO6hGlZ8fo8DB3tAXLxihY',
-	    range: 'TestNotifPolycom!A2:C',
+	    range: sheetName + '!A2:C',
 	}, (err, res) => {
 	    if (err) {
 		reject('The API returned an error: ' + err);

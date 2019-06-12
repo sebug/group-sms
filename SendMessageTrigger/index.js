@@ -104,18 +104,43 @@ const updateGroupJavascript = () => {
 	return res;
     };
 
+    let gotGroups = null;
+
+    const ensureGroups = (username, password) => {
+        return fetch('/api/GetFromGoogleSheetsTrigger?username=' + username +
+		     '&password=' + password).then(response => {
+            return response.json();
+        }).then(groups => {
+          if (!gotGroups && groups) {
+            gotGroups = groups;
+            let html = '';
+            Object.keys(groups).forEach(k => {
+               html += '<option value="' + k + '">' + k + '</option>';
+            });
+            groupDropdown.innerHTML = html;
+          }
+          return groups;
+        });
+    };
+
     const getGroups = (username, password, groupName) => {
-	return fetch('/api/GetFromGoogleSheetsTrigger?username=' + username +
-		     '&password=' + password +
-		     '&groupName=' + groupName).then(response => {
-			 return response.json();
-		     });
+	return ensureGroups(username, password).then(allGroups => {
+                         return allGroups[groupName];
+                     });
     };
 
     const verifyParametersSend = () => {
 	const username = userNameInput.value;
 	const password = passwordInput.value;
 	const groupName = groupDropdown.value;
+
+        if (username && password) {
+            ensureGroups(username, password).then(groups => {
+                console.log('Groups ensured');
+                console.log(groups);
+            });
+        }
+
 	if (username && password && groupName) {
 	    getGroups(username, password, groupName).then(members => {
 		const membersHtml = createListFromMembers(members);
@@ -297,8 +322,14 @@ const processSend = (context, groups, requestBody, callback) => {
     }
 };
 
-const getGroupsFromJSON = (context, successCallback, errorCallback) => {
-    const url = new URL(process.env.GROUPS_URL);
+const getGroupsFromJSON = (context, username, password, successCallback, errorCallback) => {
+    if (!username || !password) {
+	 context.log("Don't know username or password yet, no biggie, just return the empty list");
+	 successCallback({});
+	 return;
+    }
+    const url = new URL('https://group-sms.azurewebsites.net/api/GetFromGoogleSheetsTrigger?username=' + username +
+		     '&password=' + password);
     const req = https.request(url, {}, (res) => {
 	context.log(`groups status code: ${res.statusCode}`);
 
@@ -373,5 +404,13 @@ module.exports = function (context, req) {
 	};
 	context.done();
     };
-    getGroupsFromJSON(context, successCallback, errorCallback);
+    let username = null;
+    let password = null;
+    if (req.body) {
+	const searchParams = new URLSearchParams(req.body);
+	username = searchParams.get('username');
+	password = searchParams.get('password');
+    }
+	
+    getGroupsFromJSON(context, username, password, successCallback, errorCallback);
 };
