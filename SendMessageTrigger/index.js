@@ -283,7 +283,11 @@ const processSend = (context, groups, requestBody, callback) => {
     const password = searchParams.get('password');
     const recipient = searchParams.get('groupe');
     context.log('Provider used: ' + process.env.PROVIDER_USED);
-    const successCallback = () => {
+    const successCallback = (personsSent) => {
+	if (personsSent) {
+	    context.log('Sent to the following people');
+	    context.log(personsSent);
+	}
 	callback('<p>Message envoyé au groupe ' + recipient + '. ' +
 	returnLink +
 		    '</p>');
@@ -314,12 +318,17 @@ const processSend = (context, groups, requestBody, callback) => {
 	const sendPromises = peopleToSendTo.filter(person => person.number).map(person => new Promise((resolve, reject) => {
 	    person.number = person.number.replace(/ /g, '');
 	    context.log('Sending to ' + person.firstName + ' ' + person.lastName + ' ' + person.number);
-	    sendSMSSwisscom(context, person.number, message, resolve, (err) => {
+	    let sentCallback = () => {
+		resolve(person);
+	    };
+	    sendSMSSwisscom(context, person.number, message, sentCallback, (err) => {
 		context.log('Error sending to ' + person.number);
 		resolve();
 	    });
 	}));
-	Promise.all(sendPromises).then(successCallback, errorCallback);
+	Promise.all(sendPromises).then((personsSent) => {
+	    successCallback(personsSent);
+	}, errorCallback);
     }
 };
 
