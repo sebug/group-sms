@@ -330,7 +330,8 @@ const getGroupsFromJSON = (context, username, password, successCallback, errorCa
 	 return;
     }
     const url = new URL('https://group-sms.azurewebsites.net/api/GetFromGoogleSheetsTrigger?username=' + username +
-		     '&password=' + password);
+			'&password=' + password);
+    context.log('Calling ' + url);
     const req = https.request(url, {}, (res) => {
 	context.log(`groups status code: ${res.statusCode}`);
 
