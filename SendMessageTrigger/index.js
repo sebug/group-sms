@@ -319,11 +319,16 @@ const processSend = (context, groups, requestBody, callback) => {
 	    person.number = person.number.replace(/ /g, '');
 	    context.log('Sending to ' + person.firstName + ' ' + person.lastName + ' ' + person.number);
 	    let sentCallback = () => {
-		resolve(person);
+		resolve({
+		    Sent: person
+		});
 	    };
 	    sendSMSSwisscom(context, person.number, message, sentCallback, (err) => {
 		context.log('Error sending to ' + person.number);
-		resolve();
+		resolve({
+		    NotSent: person,
+		    Error: err
+		});
 	    });
 	}));
 	Promise.all(sendPromises).then((personsSent) => {
