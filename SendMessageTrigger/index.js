@@ -335,8 +335,17 @@ const getGroupsFromJSON = (context, username, password, successCallback, errorCa
     const req = https.request(url, {}, (res) => {
 	context.log(`groups status code: ${res.statusCode}`);
 
+	let fullData = '';
+	
+
 	res.on('data', (d) => {
-	    const groups = JSON.parse('' + d);
+	    context.log('Received group data');
+	    fullData += d;
+	});
+
+	res.on('close', () => {
+	    context.log('close');
+	    const groups = JSON.parse(fullData);
 	    successCallback(groups);
 	});
     });
