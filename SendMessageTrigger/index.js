@@ -350,6 +350,7 @@ const getGroupsFromJSON = (context, username, password, successCallback, errorCa
 };
 
 module.exports = function (context, req) {
+    context.log('Starting execution');
     const successCallback = (groups) => {
 	const groupsArray = getGroupsFromObject(groups);
 	let pageContent = contentSendForm(groupsArray);
@@ -408,10 +409,15 @@ module.exports = function (context, req) {
     };
     let username = null;
     let password = null;
-    if (req.body) {
-	const searchParams = new URLSearchParams(req.body);
-	username = searchParams.get('username');
-	password = searchParams.get('password');
+    try {
+	if (req.body) {
+	    const searchParams = new URLSearchParams(req.body);
+	    username = searchParams.get('username');
+	    password = searchParams.get('password');
+	}
+    } catch (e) {
+	context.log('Error when extracting items');
+	context.log(e);
     }
 	
     getGroupsFromJSON(context, username, password, successCallback, errorCallback);
