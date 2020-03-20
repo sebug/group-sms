@@ -45,7 +45,9 @@ function getAstreintsFromSheet(auth, sheetName, context) {
 		reject('The API returned an error: ' + err);
 		return;
 	    }
+	    context.log('Before rows');
 	    const rows = res.data.values;
+	    context.log('After rows');
 	    if (rows.length) {
 		resolve({
 		    sheetName: sheetName,
@@ -197,7 +199,6 @@ module.exports = (context, req) => {
     verifyCredentials(context, req.query.username, req.query.password,
 		      () => {
 			  authorize(auth => {
-			      context.log(auth);
 			      listAstreints(auth, context);
 			  }, err => {
 			      context.log('Could noth authorize using service account');
