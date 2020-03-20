@@ -12,6 +12,7 @@
 */
 const {google} = require('googleapis');
 const crypto = require('crypto');
+const fs = require('fs');
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
@@ -23,10 +24,12 @@ const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
  * @param {function} callback The callback to call with the authorized client.
  */
 function authorize(callback, errorCallback) {
-    const auth = new google.auth.GoogleAuth({
-	scopes: SCOPES
+    fs.writeFile('credentials.json', process.env.GOOGLE_CREDENTIALS_CONTENT, function (err) {
+	const auth = new google.auth.GoogleAuth({
+	    scopes: SCOPES
+	});
+	auth.getClient().then(callback, errorCallback);
     });
-    auth.getClient().then(callback, errorCallback);
 }
 
 function getAstreintsFromSheet(auth, sheetName, context) {
