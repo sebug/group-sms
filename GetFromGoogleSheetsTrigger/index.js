@@ -17,20 +17,16 @@ const crypto = require('crypto');
 const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
 // The token will be read from the environment variable
 
-const credentials = JSON.parse(process.env.GOOGLE_SHEETS_CREDENTIALS);
-
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
  * given callback function.
  * @param {function} callback The callback to call with the authorized client.
  */
 function authorize(callback) {
-  const {client_secret, client_id, redirect_uris} = credentials.installed;
-  const oAuth2Client = new google.auth.OAuth2(
-      client_id, client_secret, redirect_uris[0]);
-
-    oAuth2Client.setCredentials(JSON.parse(process.env.GOOGLE_SHEETS_TOKEN));
-    callback(oAuth2Client);
+    const auth = new google.auth.GoogleAuth({
+	scopes: SCOPES
+    });
+    auth.then(callback);
 }
 
 function getAstreintsFromSheet(auth, sheetName, context) {
@@ -190,7 +186,6 @@ const verifyCredentials = (context, username, password, continuation) => {
 };
 
 module.exports = (context, req) => {
-    context.log(process.env.GOOGLE_SHEETS_TOKEN);
     verifyCredentials(context, req.query.username, req.query.password,
 		      () => {
 			  authorize(auth => {
