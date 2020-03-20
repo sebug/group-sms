@@ -148,6 +148,7 @@ function listAstreints(auth, context) {
 	    return getAstreintsFromSheet(auth, name, context);
 	});
 	Promise.all(sheetPromises).then(function (results) {
+	    context.log('In promise.all');
 	    try {
 		const groups = {};
 		for (let sheet of results) {
