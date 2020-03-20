@@ -39,7 +39,6 @@ function getAstreintsFromSheet(auth, sheetName, context) {
 	    spreadsheetId: process.env.GOOGLE_SHEET_ID,
 	    range: sheetName + '!A2:C',
 	}, (err, res) => {
-	    context.log('got some result for ' + sheetName);
 	    if (err) {
 		context.log(err);
 		reject('The API returned an error: ' + err);
@@ -48,7 +47,6 @@ function getAstreintsFromSheet(auth, sheetName, context) {
 	    const rows = res.data.values;
 	    if (rows.length) {
 		try {
-		    context.log('Got rows');
 		resolve({
 		    sheetName: sheetName,
 		    rows: rows.map((row) => {
@@ -143,29 +141,40 @@ function listAstreints(auth, context) {
 	    context.done();
 	    return;
 	}
-	context.log('Before res.data.sheets');
 	const sheetNames = res.data.sheets.map((sheet) => {
 	    return sheet.properties.title;
 	});
-	context.log('before sheet promises');
 	const sheetPromises = sheetNames.map((name) => {
 	    return getAstreintsFromSheet(auth, name, context);
 	});
 	Promise.all(sheetPromises).then(function (results) {
-	    const groups = {};
-	    for (let sheet of results) {
-		groups[sheet.sheetName] = sheet.rows;
-	    }
-	    let dict = getFullNameToNumberDict(groups);
-            replacePositionsWithNumbers(groups, dict);
-	    context.res = {
-		status: 200,
-		body: groups,
-		headers: {
-		    'Content-Type': 'application/json'
+	    try {
+		const groups = {};
+		for (let sheet of results) {
+		    groups[sheet.sheetName] = sheet.rows;
 		}
-	    };
-	    context.done();
+		context.log('after let for');
+		let dict = getFullNameToNumberDict(groups);
+		replacePositionsWithNumbers(groups, dict);
+		context.res = {
+		    status: 200,
+		    body: groups,
+		    headers: {
+			'Content-Type': 'application/json'
+		    }
+		};
+		context.done();
+	    } catch (ex) {
+		context.log(ex);
+		context.res = {
+		    status: 400,
+		    body: '"Failed in the very end"',
+		    headers: {
+			'Content-Type': 'application/json'
+		    }
+		};
+		context.done();
+	    }
 	});
     });
 }
