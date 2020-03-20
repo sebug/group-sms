@@ -45,25 +45,25 @@ function getAstreintsFromSheet(auth, sheetName, context) {
 		return;
 	    }
 	    const rows = res.data.values;
-	    if (rows.length) {
+	    if (rows && rows.length) {
 		try {
-		resolve({
-		    sheetName: sheetName,
-		    rows: rows.map((row) => {
-			let r = {
-			    firstName: row[0],
-			    lastName: row[1],
-			    number: row[2]
-			};
-			if (r.number && r.number.toString().indexOf('00') === 0) {
-			    r.number = '+' + r.number.substr(2);
-			}
-			if (r.number) {
-			    r.number = r.number.replace(/ /g, '');
-			}
-			return r;
-		    })
-		});
+		    resolve({
+			sheetName: sheetName,
+			rows: rows.map((row) => {
+			    let r = {
+				firstName: row[0],
+				lastName: row[1],
+				number: row[2]
+			    };
+			    if (r.number && r.number.toString().indexOf('00') === 0) {
+				r.number = '+' + r.number.substr(2);
+			    }
+			    if (r.number) {
+				r.number = r.number.replace(/ /g, '');
+			    }
+			    return r;
+			})
+		    });
 		} catch (ex) {
 		    context.log(ex);
 		    reject(ex);
