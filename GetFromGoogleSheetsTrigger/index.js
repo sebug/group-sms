@@ -185,6 +185,7 @@ const verifyCredentials = (context, username, password, continuation) => {
         forbidden("Nom d'utilisateur incorrect");
         return;
     }
+    context.log('Username and password match');
     continuation();
 };
 
