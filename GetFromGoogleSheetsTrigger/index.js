@@ -22,11 +22,11 @@ const SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly'];
  * given callback function.
  * @param {function} callback The callback to call with the authorized client.
  */
-function authorize(callback) {
+function authorize(callback, errorCallback) {
     const auth = new google.auth.GoogleAuth({
 	scopes: SCOPES
     });
-    auth.then(callback);
+    auth.then(callback, errorCallback);
 }
 
 function getAstreintsFromSheet(auth, sheetName, context) {
@@ -191,6 +191,17 @@ module.exports = (context, req) => {
 			  authorize(auth => {
 			      context.log(auth);
 			      listAstreints(auth, context);
+			  }, err => {
+			      context.log('Could noth authorize using service account');
+			      context.log(err);
+			      context.res = {
+				  status: 400,
+				  body: '"Authorization failed"',
+				  headers: {
+				      'Content-Type': 'application/json'
+				  }
+			      };
+			      context.done();
 			  });
 		      });
 };
