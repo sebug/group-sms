@@ -45,10 +45,10 @@ function getAstreintsFromSheet(auth, sheetName, context) {
 		reject('The API returned an error: ' + err);
 		return;
 	    }
-	    context.log('Before rows');
 	    const rows = res.data.values;
-	    context.log('After rows');
 	    if (rows.length) {
+		try {
+		    context.log('Got rows');
 		resolve({
 		    sheetName: sheetName,
 		    rows: rows.map((row) => {
@@ -66,6 +66,10 @@ function getAstreintsFromSheet(auth, sheetName, context) {
 			return r;
 		    })
 		});
+		} catch (ex) {
+		    context.log(ex);
+		    reject(ex);
+		}
 	    } else {
 		resolve({
 		    sheetName: sheetName,
