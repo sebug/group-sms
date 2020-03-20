@@ -193,6 +193,7 @@ module.exports = (context, req) => {
     verifyCredentials(context, req.query.username, req.query.password,
 		      () => {
 			  authorize(auth => {
+			      context.log(auth);
 			      listAstreints(auth, context);
 			  });
 		      });
