@@ -39,6 +39,7 @@ function getAstreintsFromSheet(auth, sheetName, context) {
 	    spreadsheetId: process.env.GOOGLE_SHEET_ID,
 	    range: sheetName + '!A2:C',
 	}, (err, res) => {
+	    context.log('got some result for ' + sheetName);
 	    if (err) {
 		context.log(err);
 		reject('The API returned an error: ' + err);
@@ -123,9 +124,11 @@ function listAstreints(auth, context) {
     context.log('List astreints');
     const groups = {};
     const sheets = google.sheets({version: 'v4', auth});
+    context.log('Getting google sheet ' + process.env.GOOGLE_SHEET_ID);
     sheets.spreadsheets.get({
 	spreadsheetId: process.env.GOOGLE_SHEET_ID
     }, (err, res) => {
+	context.log('got a result');
 	if (err) {
 	    context.res = {
 		status: 400,
@@ -134,9 +137,11 @@ function listAstreints(auth, context) {
 	    context.done();
 	    return;
 	}
+	context.log('Before res.data.sheets');
 	const sheetNames = res.data.sheets.map((sheet) => {
 	    return sheet.properties.title;
 	});
+	context.log('before sheet promises');
 	const sheetPromises = sheetNames.map((name) => {
 	    return getAstreintsFromSheet(auth, name, context);
 	});
