@@ -26,7 +26,7 @@ function authorize(callback, errorCallback) {
     const auth = new google.auth.GoogleAuth({
 	scopes: SCOPES
     });
-    auth.then(callback, errorCallback);
+    auth.getClient().then(callback, errorCallback);
 }
 
 function getAstreintsFromSheet(auth, sheetName, context) {
