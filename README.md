@@ -1,2 +1,4 @@
 # Group SMS
-Uses the new API on digital.swisscom.com to send SMS messages to groups of people.
+Deprecated - turns out the Swisscom API didn't last!
+
+Go to https://github.com/sebug/group-sms-v2 for the new version.
